@@ -104,7 +104,7 @@ A Codespace has 8 GB RAM and effectively one physical CPU core: fine for learnin
 | `session-03/` | Groups | Google Drive |
 | `session-04/` | Reproducible Python (venv, pyenv, uv), CSV vs. pickle vs. Parquet, DuckDB as a database file, Spark fundamentals + Spark ML | laptop (Labs A–C) · Kaggle (Lab D) |
 
-**Coming:** Stream processing with Kafka and Spark Structured Streaming.
+**Coming:** Stream processing with Kafka and Spark Structured Streaming. I'm pumped!
 
 Every lab ends with **exam-style questions** – they are the best preparation for the written exam.
 
