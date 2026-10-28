@@ -1,11 +1,25 @@
-"""Download NYC Yellow Taxi trip data (Parquet) into ./data.
+"""Download NYC Yellow Taxi trip data (Parquet) and the taxi zone lookup into ./data.
 
-Usage:  python get_data.py            # 2024-01 .. 2024-06 (~300 MB)
-        python get_data.py --months 12
+Only uses the Python standard library, so it also runs before you created a virtual environment.
+
+Usage:  python get_data.py            # 2024-01 .. 2024-06 (~300 MB) + taxi zone lookup
+        python get_data.py --months 2 # what Session 4 needs (~100 MB)
 """
-import argparse, pathlib, requests
+import argparse, pathlib, shutil, urllib.request
 
 BASE = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{y}-{m:02d}.parquet"
+ZONES = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+
+
+def download(url, f):
+    print(f"↓ {url}")
+    tmp = f.with_suffix(f.suffix + ".part")
+    req = urllib.request.Request(url, headers={"User-Agent": "hok-big-data-course"})
+    with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as fh:
+        shutil.copyfileobj(r, fh, length=1 << 20)
+    tmp.replace(f)                       # only complete files get the final name
+    print(f"  {f.stat().st_size/1e6:.1f} MB")
+
 
 def main():
     p = argparse.ArgumentParser()
@@ -18,14 +32,13 @@ def main():
         f = out / f"yellow_tripdata_{a.year}-{m:02d}.parquet"
         if f.exists():
             print(f"✓ {f.name} already there"); continue
-        url = BASE.format(y=a.year, m=m)
-        print(f"↓ {url}")
-        with requests.get(url, stream=True, timeout=120) as r:
-            r.raise_for_status()
-            with open(f, "wb") as fh:
-                for chunk in r.iter_content(1 << 20):
-                    fh.write(chunk)
-        print(f"  {f.stat().st_size/1e6:.0f} MB")
+        download(BASE.format(y=a.year, m=m), f)
+    zones = out / "taxi_zone_lookup.csv"
+    if zones.exists():
+        print(f"✓ {zones.name} already there")
+    else:
+        download(ZONES, zones)
+
 
 if __name__ == "__main__":
     main()

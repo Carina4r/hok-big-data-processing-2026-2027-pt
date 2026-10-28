@@ -1,12 +1,11 @@
-# Session 1: single-node engines
-pandas>=2.2
-polars>=1.0
-duckdb>=1.1
-pyarrow>=17
-psutil
-matplotlib
-ipykernel
-requests
-# Session 2+: Spark & Lakehouse (Java 17 is provided by the dev container)
+# Everything, including Spark and Delta Lake. Spark needs Java 17 or newer.
+# Used by the dev container (Codespaces / Docker), which already brings Java 17.
+# On a laptop without Java, install requirements-local.txt instead.
+#
+#   pip install -r requirements.txt
+
+-r requirements-local.txt
+
+# Spark & Lakehouse
 pyspark>=4.0,<4.1
 delta-spark>=4.0,<4.1
